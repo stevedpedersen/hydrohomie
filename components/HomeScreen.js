@@ -4,6 +4,7 @@ import { Text, Title, Paragraph, Button } from 'react-native-paper';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+import * as BackgroundFetch from 'expo-background-fetch';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -100,7 +101,7 @@ class HomeScreen extends Component {
               <View style={styles.buttonContainer}>
                 <Button
                   onPress={() => this.props.navigation.navigate('Settings')}
-                  style={styles.button}>
+                  style={{...styles.button, backgroundColor: '#3943B7'}}>
                   <Text style={{ color: '#fff', fontWeight: 'bold' }}>Settings</Text>
                 </Button>
               </View>
