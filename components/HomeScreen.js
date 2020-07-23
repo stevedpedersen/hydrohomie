@@ -56,31 +56,60 @@ class HomeScreen extends Component {
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
 
-  _handleNotification = notification => {
-    Vibration.vibrate();
-    console.log(notification);
-    this.setState({ notification: notification });
-  };
+  _handleNotification = async notification => {     
+    console.log("notification test");
+    if (!notification.remote) {
+      console.log("remote notification test");
+      Vibration.vibrate();                                                  
+      const notificationId = Notifications.presentLocalNotificationAsync({      
+        title: "Follow @technoplato",  
+        body: "To learn yourself goodly (also follow PewDiePie)",                                             
+        ios: { _displayInForeground: true } // <-- HERE'S WHERE THE MAGIC HAPPENS                                
+      });                                                                       
+    }                                                   
+  }; 
 
   // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
   sendPushNotification = async () => {
-    const message = {
-      to: this.state.expoPushToken,
-      sound: 'default',
-      title: 'Original Title',
-      body: 'And here is the body!',
-      data: { data: 'goes here' },
-      _displayInForeground: true,
+
+    // const message = {
+    //   to: this.state.expoPushToken,
+    //   sound: 'default',
+    //   title: 'Original Title',
+    //   body: 'And here is the body!',
+    //   data: { data: 'goes here' },
+    //   _displayInForeground: true,
+    // };
+    // const response = await fetch('https://exp.host/--/api/v2/push/send', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Accept-encoding': 'gzip, deflate',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(message),
+    // });
+
+    const notification = {
+      title: 'Hi there!',
+      body: 'Tap me to open the app.',
+      android: { sound: true }, // Make a sound on Android
+      ios: { sound: true }, // Make a sound on iOS
     };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
+    
+    const options = {
+      time: Date.now() + 5000, // Schedule it in 10 seconds
+      repeat: 'day', // Repeat it daily
+    };
+    
+    // ... somewhere after requesting permission ...
+    const id = Notifications.scheduleLocalNotificationAsync(notification, options)
+    
+    // If you want to react even when your app is still in the
+    // foreground, you can listen to the event like this:
+    // Notifications.addListener(() => {
+    //   console.log('triggered!');
+    // });
   };
 
   render() {
