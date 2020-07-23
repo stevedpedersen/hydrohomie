@@ -56,18 +56,18 @@ class HomeScreen extends Component {
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
 
-  _handleNotification = async notification => {     
+  _handleNotification = async notification => {
     console.log("notification test");
     if (!notification.remote) {
       console.log("remote notification test");
-      Vibration.vibrate();                                                  
-      const notificationId = Notifications.presentLocalNotificationAsync({      
-        title: "Follow @technoplato",  
-        body: "To learn yourself goodly (also follow PewDiePie)",                                             
+      Vibration.vibrate();
+      const notificationId = Notifications.presentLocalNotificationAsync({
+        title: "Follow @technoplato",
+        body: "To learn yourself goodly (also follow PewDiePie)",
         ios: { _displayInForeground: true } // <-- HERE'S WHERE THE MAGIC HAPPENS                                
-      });                                                                       
-    }                                                   
-  }; 
+      });
+    }
+  };
 
   // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
   sendPushNotification = async () => {
@@ -96,15 +96,15 @@ class HomeScreen extends Component {
       android: { sound: true }, // Make a sound on Android
       ios: { sound: true }, // Make a sound on iOS
     };
-    
+
     const options = {
       time: Date.now() + 5000, // Schedule it in 10 seconds
       repeat: 'day', // Repeat it daily
     };
-    
+
     // ... somewhere after requesting permission ...
     const id = Notifications.scheduleLocalNotificationAsync(notification, options)
-    
+
     // If you want to react even when your app is still in the
     // foreground, you can listen to the event like this:
     // Notifications.addListener(() => {
@@ -130,7 +130,7 @@ class HomeScreen extends Component {
               <View style={styles.buttonContainer}>
                 <Button
                   onPress={() => this.props.navigation.navigate('Settings')}
-                  style={{...styles.button, backgroundColor: '#3943B7'}}>
+                  style={{ ...styles.button, backgroundColor: '#3943B7' }}>
                   <Text style={{ color: '#fff', fontWeight: 'bold' }}>Settings</Text>
                 </Button>
               </View>
