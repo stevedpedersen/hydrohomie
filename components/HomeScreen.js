@@ -4,6 +4,7 @@ import { Text, Title, Paragraph, Button } from 'react-native-paper';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+import { connect } from 'react-redux';
 import * as BackgroundFetch from 'expo-background-fetch';
 
 const deviceHeight = Dimensions.get('window').height;
@@ -195,4 +196,13 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+function mapStateToProps(state) {
+  return {
+    settings: state.settings
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  {  }
+)(HomeScreen);

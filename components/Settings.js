@@ -13,6 +13,9 @@ import { Chevron } from 'react-native-shapes';
 import { Ionicons } from '@expo/vector-icons';
 import { Text, Title, Paragraph, Button } from 'react-native-paper';
 import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
+import { connect } from 'react-redux';
+
+import { saveSettings } from '../redux/actions';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -450,4 +453,13 @@ const pickerSelectStyles = StyleSheet.create({
     },
 });
 
-export default Settings;
+function mapStateToProps(state) {
+    return {
+        settings: state.settings
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    { saveSettings }
+)(Settings);
