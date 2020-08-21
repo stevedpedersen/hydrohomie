@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, ImageBackground, Dimensions, Vibration, Platform } from 'react-native';
 import { Text, Title, Paragraph, Button } from 'react-native-paper';
-import { Notifications } from 'expo';
+import * as ExpoNotifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import { connect } from 'react-redux';
@@ -11,6 +11,10 @@ const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
 class HomeScreen extends Component {
+
+  _isMounted = false;
+  notificationListener = null;
+  responseListener = null;
 
   state = {
     expoPushToken: '',
@@ -47,53 +51,55 @@ class HomeScreen extends Component {
   };
 
   componentDidMount() {
-    this.registerForPushNotificationsAsync();
+    this._isMounted = true;
+    // this.registerForPushNotificationsAsync();
 
-    // Handle notifications that are received or selected while the app
-    // is open. If the app was closed and then opened by tapping the
-    // notification (rather than just tapping the app icon to open it),
-    // this function will fire on the next tick after the app starts
-    // with the notification data.
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    if (this._isMounted) {
+
+      ExpoNotifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+        }),
+      });
+
+      // this._notificationSubscription = Notifications.addListener(this._handleNotification);
+      this.notificationListener = ExpoNotifications.addNotificationReceivedListener(
+        this._handleNotification
+      );
+      
+      // This listener is fired whenever a user taps on or interacts with a notification 
+      // (works when app is foregrounded, backgrounded, or killed)
+      this.responseListener = ExpoNotifications.addNotificationResponseReceivedListener(
+        this._handleNotificationResponse
+      );
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    ExpoNotifications.removeNotificationSubscription(this.notificationListener);
+    ExpoNotifications.removeNotificationSubscription(this.responseListener);
   }
 
   _handleNotification = async notification => {
-    console.log("notification test");
-    if (!notification.remote) {
-      console.log("remote notification test");
-      Vibration.vibrate();
-      const notificationId = Notifications.presentLocalNotificationAsync({
-        title: "Follow @technoplato",
-        body: "To learn yourself goodly (also follow PewDiePie)",
-        ios: { _displayInForeground: true } // <-- HERE'S WHERE THE MAGIC HAPPENS                                
-      });
-    }
+    let data = notification.request.content.data;
   };
 
-  // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
-  sendPushNotification = async () => {
+  _handleNotificationResponse = response => {
+    let data = response.notification.request.content.data;
 
-    // const message = {
-    //   to: this.state.expoPushToken,
-    //   sound: 'default',
-    //   title: 'Original Title',
-    //   body: 'And here is the body!',
-    //   data: { data: 'goes here' },
-    //   _displayInForeground: true,
-    // };
-    // const response = await fetch('https://exp.host/--/api/v2/push/send', {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Accept-encoding': 'gzip, deflate',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(message),
-    // });
+    // Dismiss notification from Notification Center tray
+    ExpoNotifications.dismissNotificationAsync(data.id);
+  };
 
+  startHydrationSession = () => {
+    
     const notification = {
-      title: 'Hi there!',
-      body: 'Tap me to open the app.',
+      title: 'Hydration Time!',
+      body: 'Drink a glass of water homie.',
+      expiration: Math.round(((new Date).getTime() + this.props.settings.duration * 60) / 1000),
       android: { sound: true }, // Make a sound on Android
       ios: { sound: true }, // Make a sound on iOS
     };
@@ -105,13 +111,7 @@ class HomeScreen extends Component {
 
     // ... somewhere after requesting permission ...
     const id = Notifications.scheduleLocalNotificationAsync(notification, options)
-
-    // If you want to react even when your app is still in the
-    // foreground, you can listen to the event like this:
-    // Notifications.addListener(() => {
-    //   console.log('triggered!');
-    // });
-  };
+  }
 
   render() {
     return (
@@ -121,7 +121,7 @@ class HomeScreen extends Component {
             <View style={styles.card}>
               <View style={styles.buttonContainer}>
                 <Button
-                  onPress={() => this.sendPushNotification()}
+                  onPress={() => this.startHydrationSession()}
                   style={styles.button}
                   icon="cup-water"
                   mode="contained">

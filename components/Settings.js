@@ -62,8 +62,8 @@ class Settings extends Component {
         super(props);
 
         this.state = {
-            interval: this.props.interval ?? '60',
-            duration: this.props.duration ?? '360'
+            interval: this.props.settings.interval ?? '60',
+            duration: this.props.settings.duration ?? '360'
         };
     }
 
@@ -72,6 +72,8 @@ class Settings extends Component {
             interval: this.state.interval,
             duration: this.state.duration
         });
+        
+        this.props.navigation.navigate('Home');
     }
 
     render() {
@@ -221,8 +223,7 @@ const pickerSelectStyles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        interval: state.settings.interval,
-        duration: state.settings.duration
+        settings: state.settings
     }
 }
 
