@@ -8,10 +8,10 @@ const INITIAL_STATE = {
 }
 
 export default function(state = INITIAL_STATE, action) {
-  console.log('in settings reducer');
+
   switch (action.type) {
     case SAVE_SETTINGS:
-      console.log('in settings reducer, case SAVE_SETTINGS', action.payload);
+      // console.log('in settings reducer, case SAVE_SETTINGS', action.payload);
       return {
         ...state,
         ...action.payload
