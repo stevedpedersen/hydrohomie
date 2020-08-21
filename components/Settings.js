@@ -37,6 +37,24 @@ const intervals = [
         value: '15',
     },
 ];
+const durations = [
+    {
+        label: '12 Hours',
+        value: '720',
+    },
+    {
+        label: '9 Hours',
+        value: '540',
+    },
+    {
+        label: '6 Hours',
+        value: '360',
+    },
+    {
+        label: '3 Hours',
+        value: '180',
+    },
+];
 
 class Settings extends Component {
 
@@ -45,12 +63,14 @@ class Settings extends Component {
 
         this.state = {
             interval: this.props.interval ?? '60',
+            duration: this.props.duration ?? '360'
         };
     }
 
     handleSubmit = () => {
         this.props.saveSettings({
             interval: this.state.interval,
+            duration: this.state.duration
         });
     }
 
@@ -86,10 +106,29 @@ class Settings extends Component {
                         }}
                     />
 
-                <Button 
-                    onPress={this.handleSubmit}>
-                    Submit
-                </Button>        
+                    <RNPickerSelect
+                        placeholder={{...placeholder, label: "Select a duration"}}
+                        items={durations}
+                        onValueChange={value => this.setState({ duration: value })}
+                        style={{
+                            ...pickerSelectStyles,
+                            iconContainer: {
+                                top: 10,
+                                right: 12,
+                            },
+                        }}
+                        value={this.state.duration}
+                        useNativeAndroidPickerStyle={false}
+                        textInputProps={{ underlineColor: 'yellow' }}
+                        Icon={() => {
+                            return <Ionicons name="md-arrow-down" size={24} color="gray" />;
+                        }}
+                    />
+
+                    <Button 
+                        onPress={this.handleSubmit}>
+                        Submit
+                    </Button>        
 
                 </ScrollView>
             </View>
@@ -182,7 +221,8 @@ const pickerSelectStyles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        interval: state.settings.interval
+        interval: state.settings.interval,
+        duration: state.settings.duration
     }
 }
 

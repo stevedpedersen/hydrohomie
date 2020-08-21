@@ -4,7 +4,7 @@ import {
 
 const INITIAL_STATE = {
   interval: '60',
-  length: '360'
+  duration: '360'
 }
 
 export default function(state = INITIAL_STATE, action) {
