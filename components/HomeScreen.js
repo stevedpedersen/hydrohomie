@@ -4,8 +4,10 @@ import { Text, Title, Paragraph, Button } from 'react-native-paper';
 import * as ExpoNotifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+// import * as Notifications from 'expo-notifications';
 import { connect } from 'react-redux';
 import * as BackgroundFetch from 'expo-background-fetch';
+import { Notifications } from 'expo';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -16,10 +18,21 @@ class HomeScreen extends Component {
   notificationListener = null;
   responseListener = null;
 
-  state = {
-    expoPushToken: '',
-    notification: {},
-  };
+  // state = {
+  //   expoPushToken: '',
+  //   notification: {},
+  // };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        interval: this.props.settings.interval ?? '60',
+        duration: this.props.settings.duration ?? '360',
+        expoPushToken: '',
+        notification: {}
+    };
+  }
 
   registerForPushNotificationsAsync = async () => {
     if (Constants.isDevice) {
@@ -105,12 +118,12 @@ class HomeScreen extends Component {
     };
 
     const options = {
-      time: Date.now() + 5000, // Schedule it in 10 seconds
-      repeat: 'day', // Repeat it daily
+      // time: Date.now() + 10000, // Schedule it in 10 seconds
+      // repeat: 'day', // Repeat it daily
+      time: Date.now() + (this.state.interval * 1000)
     };
 
-    // ... somewhere after requesting permission ...
-    const id = Notifications.scheduleLocalNotificationAsync(notification, options)
+    Notifications.scheduleLocalNotificationAsync(notification, options);
   }
 
   render() {
