@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+import { connect } from 'react-redux';
+import { resetSession } from './actions';
 
 class NotificationHandler extends Component {
 
@@ -12,7 +14,6 @@ class NotificationHandler extends Component {
     state = {
         notification: {},
     };
-
 
     componentDidMount() {
 
@@ -78,19 +79,59 @@ class NotificationHandler extends Component {
     };
 
     _handleNotification = notification => {
-        // if (this.props.session.endTime > Date.now()) {
 
-        // }
-        Notifications.scheduleNotificationAsync({
-            content: {
-                title: 'received',
-                body: 'boidy'
-            },
-            trigger: {
-                seconds: 10, //notification.interval * 60,
-                repeats: false
-            },
-        });
+        let getRoundedMinutes = (minutes, date=new Date()) => {
+
+            let ms = 1000 * 60 * minutes; // convert minutes to ms
+            let roundedDate = new Date(Math.round(date.getTime() / ms) * ms);
+
+            return roundedDate;
+        }
+
+        let getRoundedHours = (hours, date=new Date()) => {
+
+            let ms = 1000 * hours; // convert hours to ms
+            let roundedDate = new Date(Math.round(date.getTime() / ms) * ms);
+
+            return roundedDate;
+        }
+        
+        // Session has not ended
+        if (this.props.session.endTime > Date.now()) {
+
+            const hoursLeft = Math.floor((this.props.session.endTime - Date.now()) / 1000 / 60 / 60);
+            const minutesLeft = Math.floor((this.props.session.endTime - Date.now()) / 1000 / 60);
+
+            Notifications.scheduleNotificationAsync({
+                content: {
+                    title: 'Drink water homie!',
+                    body: `You have ${hoursLeft} hours and ${minutesLeft} minutes until your next water drink`
+                },
+                trigger: {
+                    seconds: this.props.session.interval * 60, //notification.interval * 60,
+                    repeats: false
+                },
+            });
+
+        } else if (this.props.session.active) {
+
+            resetSession();
+
+            Notifications.scheduleNotificationAsync({
+                content: {
+                    title: 'Session Ended.',
+                    body: `Though your session is over, why not drink another delicious glass?`
+                },
+                trigger: {
+                    seconds: 1,
+                    repeats: false
+                },
+            });
+
+        } else {
+
+            Notifications.cancelAllScheduledNotificationsAsync();
+        }
     };
 
     _handleNotificationResponse = response => {
@@ -134,8 +175,19 @@ export function scheduler(notification) {
             body: notification.body
         },
         trigger: {
-            seconds: 10, //notification.interval * 60,
+            seconds: this.props.session.interval * 60,
             repeats: false
         },
     });
 };
+
+function mapStateToProps(state) {
+    return {
+        session: state.session
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    { }
+)(HomeScreen);

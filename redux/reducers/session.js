@@ -8,7 +8,8 @@ const INITIAL_STATE = {
   duration: '',
   startTime: null,
   endTime: null,
-  paused: false
+  paused: false,
+  active: false
 }
 
 export default function(state = INITIAL_STATE, action) {

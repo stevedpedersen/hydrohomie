@@ -36,6 +36,10 @@ const intervals = [
         label: '15 minutes',
         value: '15',
     },
+    {
+        label: 'dev 30 secs',
+        value: '.5',
+    },
 ];
 const durations = [
     {
@@ -53,6 +57,10 @@ const durations = [
     {
         label: '3 Hours',
         value: '180',
+    },
+    {
+        label: 'dev 2 mins',
+        value: '0.03333333',
     },
 ];
 

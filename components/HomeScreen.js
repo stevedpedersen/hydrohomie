@@ -23,12 +23,15 @@ class HomeScreen extends Component {
       duration: this.props.settings.duration,
       startTime: Date.now(),
       endTime: Date.now() + (this.props.settings.duration * 60 * 1000),
-      paused: false
+      paused: false,
+      active: true
     }
+
+    saveSession(session);
+
     const notification = {
       title: 'Hydration Time!',
-      body: 'Drink a glass of water homie.',
-      session: this.props.session,
+      body: 'Drink a glass of water homie.'
     };
 
     scheduler(notification);
@@ -117,7 +120,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
-    settings: state.settings
+    settings: state.settings,
+    session: state.session
   }
 }
 
