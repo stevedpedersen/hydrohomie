@@ -1,14 +1,52 @@
 import React, { Component } from 'react';
-import { Notifications } from 'expo';
+import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 
-class HydroNotifications extends Component {
+class NotificationHandler extends Component {
+
+    _isMounted = false;
+    notificationListener = null;
+    responseListener = null;
 
     state = {
-        expoPushToken: '',
         notification: {},
     };
+
+
+    componentDidMount() {
+
+        this._isMounted = true;
+
+        if (this._isMounted) {
+
+            this.registerForPushNotificationsAsync();
+
+            Notifications.setNotificationHandler({
+                handleNotification: async () => ({
+                    shouldShowAlert: true,
+                    shouldPlaySound: true,
+                    shouldSetBadge: true,
+                }),
+            });
+
+            this.notificationListener = Notifications.addNotificationReceivedListener(
+                this._handleNotification
+            );
+
+            // This listener is fired whenever a user taps on or interacts with a notification 
+            // (works when app is foregrounded, backgrounded, or killed)
+            this.responseListener = Notifications.addNotificationResponseReceivedListener(
+                this._handleNotificationResponse
+            );
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        Notifications.removeNotificationSubscription(this.notificationListener);
+        Notifications.removeNotificationSubscription(this.responseListener);
+    }
 
     registerForPushNotificationsAsync = async () => {
         if (Constants.isDevice) {
@@ -39,21 +77,16 @@ class HydroNotifications extends Component {
         }
     };
 
-    componentDidMount() {
-        this.registerForPushNotificationsAsync();
-
-        // Handle notifications that are received or selected while the app
-        // is open. If the app was closed and then opened by tapping the
-        // notification (rather than just tapping the app icon to open it),
-        // this function will fire on the next tick after the app starts
-        // with the notification data.
-        this._notificationSubscription = Notifications.addListener(this._handleNotification);
-    }
-
     _handleNotification = notification => {
-        Vibration.vibrate();
-        console.log(notification);
+        // Vibration.vibrate();
         this.setState({ notification: notification });
+
+        console.log('NOTIFICATION RECEIVED: ', notification);
+    };
+
+    _handleNotificationResponse = response => {
+        console.log('NOTIFICATION RESPONSE', response);
+        Notifications.cancelAllScheduledNotificationsAsync();
     };
 
     // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
@@ -76,6 +109,24 @@ class HydroNotifications extends Component {
             body: JSON.stringify(message),
         });
     };
+
+    render() {
+        return null;
+    }
 }
 
-export default HydroNotifications;
+export default NotificationHandler;
+
+
+export function scheduler(notification) {
+    Notifications.scheduleNotificationAsync({
+        content: {
+            title: 'Remember to drink water!',
+            body: 'Hurry up'
+        },
+        trigger: {
+            seconds: 60,
+            repeats: true
+        },
+    });
+};

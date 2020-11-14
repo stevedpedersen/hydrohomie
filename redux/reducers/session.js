@@ -1,5 +1,6 @@
 import {
-  SAVE_SESSION
+  SAVE_SESSION,
+  RESET_SESSION
 } from '../actions/types';
 
 const INITIAL_STATE = {

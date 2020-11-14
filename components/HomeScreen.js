@@ -4,10 +4,12 @@ import { Text, Title, Paragraph, Button } from 'react-native-paper';
 import * as ExpoNotifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-// import * as Notifications from 'expo-notifications';
+
 import { connect } from 'react-redux';
 import * as BackgroundFetch from 'expo-background-fetch';
-import { Notifications } from 'expo';
+
+import NotificationHandler from './NotificationHandler';
+import { scheduler } from './NotificationHandler';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -108,7 +110,6 @@ class HomeScreen extends Component {
   };
 
   startHydrationSession = () => {
-    
     const notification = {
       title: 'Hydration Time!',
       body: 'Drink a glass of water homie.',
@@ -117,18 +118,29 @@ class HomeScreen extends Component {
       ios: { sound: true }, // Make a sound on iOS
     };
 
-    const options = {
-      // time: Date.now() + 10000, // Schedule it in 10 seconds
-      // repeat: 'day', // Repeat it daily
-      time: Date.now() + (this.state.interval * 1000)
-    };
+    scheduler(notification);
+    
+    // const notification = {
+    //   title: 'Hydration Time!',
+    //   body: 'Drink a glass of water homie.',
+    //   expiration: Math.round(((new Date).getTime() + this.props.settings.duration * 60) / 1000),
+    //   android: { sound: true }, // Make a sound on Android
+    //   ios: { sound: true }, // Make a sound on iOS
+    // };
 
-    Notifications.scheduleLocalNotificationAsync(notification, options);
+    // const options = {
+    //   // time: Date.now() + 10000, // Schedule it in 10 seconds
+    //   // repeat: 'day', // Repeat it daily
+    //   time: Date.now() + (this.state.interval * 1000)
+    // };
+
+    // Notifications.scheduleLocalNotificationAsync(notification, options);
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <NotificationHandler />
         <ImageBackground source={require('../assets/images/icewater.jpg')} style={styles.image}>
           <View style={styles.innerContainer}>
             <View style={styles.card}>
