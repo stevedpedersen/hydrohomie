@@ -16,6 +16,7 @@ export default function(state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case SAVE_SESSION:
+      console.log('reducer', action.payload, ...action.payload);
       return {
         ...state,
         ...action.payload

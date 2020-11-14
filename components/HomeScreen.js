@@ -30,10 +30,13 @@ class HomeScreen extends Component {
 
     saveSession(session);
 
+    console.log('HomeScreen session:', this.props.session);
+
     const notification = {
       title: 'Hydration Time!',
       body: 'Drink a glass of water homie.',
-      seconds: this.props.session.interval * 60,
+      // seconds: this.props.session.interval * 60,
+      seconds: 10
     };
 
     scheduler(notification);

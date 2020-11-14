@@ -5,6 +5,7 @@ import {
 } from './types';
 
 export function saveSession(session) {
+  console.log('saveSession', session);
   return {
     type: SAVE_SESSION,
     payload: session

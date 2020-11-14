@@ -62,7 +62,7 @@ class NotificationHandler extends Component {
                 return;
             }
             token = await Notifications.getExpoPushTokenAsync();
-            console.log(token);
+
             this.setState({ expoPushToken: token });
         } else {
             alert('Must use physical device for Push Notifications');
@@ -95,10 +95,11 @@ class NotificationHandler extends Component {
 
             return roundedDate;
         }
-        
+        console.log(this.props.session);
+        console.log('0');
         // Session has not ended
         if (this.props.session.endTime > Date.now()) {
-
+            console.log('1');
             const hoursLeft = Math.floor((this.props.session.endTime - Date.now()) / 1000 / 60 / 60);
             const minutesLeft = Math.floor((this.props.session.endTime - Date.now()) / 1000 / 60);
 
@@ -115,6 +116,7 @@ class NotificationHandler extends Component {
             });
 
         } else if (this.props.session.active) {
+            console.log('2');
 
             resetSession();
 
@@ -130,13 +132,13 @@ class NotificationHandler extends Component {
             });
 
         } else {
+            console.log('3');
 
             Notifications.cancelAllScheduledNotificationsAsync();
         }
     };
 
     _handleNotificationResponse = response => {
-        console.log('NOTIFICATION RESPONSE', response);
         Notifications.cancelAllScheduledNotificationsAsync();
     };
 
@@ -187,5 +189,5 @@ function mapStateToProps(state) {
 
 export default connect(
     mapStateToProps,
-    { }
+    { resetSession }
 )(NotificationHandler);

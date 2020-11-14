@@ -22,45 +22,33 @@ const deviceWidth = Dimensions.get('window').width;
 const intervals = [
     {
         label: '120 minutes',
-        value: '120',
+        value: 120,
     },
     {
         label: '60 minutes',
-        value: '60',
+        value: 60,
     },
     {
         label: '30 minutes',
-        value: '30',
+        value: 30,
     },
     {
         label: '15 minutes',
-        value: '15',
-    },
-    {
-        label: 'dev 30 secs',
-        value: '.5',
+        value: 15,
     },
 ];
 const durations = [
     {
         label: '12 Hours',
-        value: '720',
+        value: 720,
     },
     {
         label: '9 Hours',
-        value: '540',
+        value: 540,
     },
     {
         label: '6 Hours',
-        value: '360',
-    },
-    {
-        label: '3 Hours',
-        value: '180',
-    },
-    {
-        label: 'dev 2 mins',
-        value: '0.03333333',
+        value: 360,
     },
 ];
 
@@ -70,12 +58,13 @@ class Settings extends Component {
         super(props);
 
         this.state = {
-            interval: this.props.settings.interval ?? '60',
-            duration: this.props.settings.duration ?? '360'
+            interval: this.props.settings.interval ?? 60,
+            duration: this.props.settings.duration ?? 360
         };
     }
 
     handleSubmit = () => {
+        console.log('settings are:', this.state.interval, this.state.duration);
         this.props.saveSettings({
             interval: this.state.interval,
             duration: this.state.duration
