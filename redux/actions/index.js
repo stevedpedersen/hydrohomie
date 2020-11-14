@@ -7,7 +7,7 @@ import {
 export function saveSession(session) {
   return {
     type: SAVE_SESSION,
-    payload: sessions
+    payload: session
   }
 }
 

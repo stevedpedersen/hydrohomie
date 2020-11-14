@@ -78,10 +78,19 @@ class NotificationHandler extends Component {
     };
 
     _handleNotification = notification => {
-        // Vibration.vibrate();
-        this.setState({ notification: notification });
+        // if (this.props.session.endTime > Date.now()) {
 
-        console.log('NOTIFICATION RECEIVED: ', notification);
+        // }
+        Notifications.scheduleNotificationAsync({
+            content: {
+                title: 'received',
+                body: 'boidy'
+            },
+            trigger: {
+                seconds: 10, //notification.interval * 60,
+                repeats: false
+            },
+        });
     };
 
     _handleNotificationResponse = response => {
@@ -121,12 +130,12 @@ export default NotificationHandler;
 export function scheduler(notification) {
     Notifications.scheduleNotificationAsync({
         content: {
-            title: 'Remember to drink water!',
-            body: 'Hurry up'
+            title: notification.title,
+            body: notification.body
         },
         trigger: {
-            seconds: 60,
-            repeats: true
+            seconds: 10, //notification.interval * 60,
+            repeats: false
         },
     });
 };
