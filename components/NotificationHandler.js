@@ -3,7 +3,7 @@ import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import { connect } from 'react-redux';
-import { resetSession } from './actions';
+import { resetSession } from '../redux/actions';
 
 class NotificationHandler extends Component {
 
@@ -108,7 +108,8 @@ class NotificationHandler extends Component {
                     body: `You have ${hoursLeft} hours and ${minutesLeft} minutes until your next water drink`
                 },
                 trigger: {
-                    seconds: this.props.session.interval * 60, //notification.interval * 60,
+                    // seconds: this.props.session.interval * 60, //notification.interval * 60,
+                    seconds: 10,
                     repeats: false
                 },
             });
@@ -165,9 +166,6 @@ class NotificationHandler extends Component {
     }
 }
 
-export default NotificationHandler;
-
-
 export function scheduler(notification) {
     Notifications.scheduleNotificationAsync({
         content: {
@@ -175,7 +173,7 @@ export function scheduler(notification) {
             body: notification.body
         },
         trigger: {
-            seconds: this.props.session.interval * 60,
+            seconds: notification.seconds,
             repeats: false
         },
     });
@@ -190,4 +188,4 @@ function mapStateToProps(state) {
 export default connect(
     mapStateToProps,
     { }
-)(HomeScreen);
+)(NotificationHandler);

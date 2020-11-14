@@ -22,7 +22,8 @@ class HomeScreen extends Component {
       interval: this.props.settings.interval,
       duration: this.props.settings.duration,
       startTime: Date.now(),
-      endTime: Date.now() + (this.props.settings.duration * 60 * 1000),
+      // endTime: Date.now() + (this.props.settings.duration * 60 * 1000),
+      endTime: Date.now() + 2 * 1000,
       paused: false,
       active: true
     }
@@ -31,7 +32,8 @@ class HomeScreen extends Component {
 
     const notification = {
       title: 'Hydration Time!',
-      body: 'Drink a glass of water homie.'
+      body: 'Drink a glass of water homie.',
+      seconds: this.props.session.interval * 60,
     };
 
     scheduler(notification);
