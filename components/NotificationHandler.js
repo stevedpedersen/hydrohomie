@@ -96,10 +96,10 @@ class NotificationHandler extends Component {
             return roundedDate;
         }
         console.log(this.props.session);
-        console.log('0');
+        console.log('0', 'cheese 0');
         // Session has not ended
         if (this.props.session.endTime > Date.now()) {
-            console.log('1');
+            console.log('1', 'cheese 1');
             const hoursLeft = Math.floor((this.props.session.endTime - Date.now()) / 1000 / 60 / 60);
             const minutesLeft = Math.floor((this.props.session.endTime - Date.now()) / 1000 / 60);
 
@@ -116,7 +116,7 @@ class NotificationHandler extends Component {
             });
 
         } else if (this.props.session.active) {
-            console.log('2');
+            console.log('2', 'cheese 2');
 
             resetSession();
 
@@ -132,8 +132,9 @@ class NotificationHandler extends Component {
             });
 
         } else {
-            console.log('3');
-
+            console.log('3', 'cheese 3');
+            // temporary fail-safe to prevent endless spam of notifications
+            resetSession();
             Notifications.cancelAllScheduledNotificationsAsync();
         }
     };
